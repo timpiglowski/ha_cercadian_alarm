@@ -1,147 +1,178 @@
 blueprint:
   name: Parabolic Alarm Automation
-  description: Turn a light on based on detected motion
+  description: Turn a light on based on a start time, whether it is a workday and whether a person is home. This is to match the sunrise and allow for a natural wake up.
   domain: automation
   input:
     alarm_start_time:
-      name: Start Time
-      description: Datetime helper for alarm to start. Use time only and Workday sensor to determine what days to run.
+      name: 🕒 Start Time
+      description:
+        Datetime helper for the alarm to start. Use time only and Workday sensor
+        to determine what days to run.
       selector:
         entity:
           filter:
-            - domain: input_datetime
+            - domain:
+                - input_datetime
+          multiple: false
     workday_sensor:
-      name: Workday Sensor
-      description: Binary Sensor for determining whether it should run. Typically from Workday Integration
+      name: 📆 Workday Sensor
+      description:
+        Binary Sensor that is used to determine whether it should run. Typically
+        from Workday Integration. More information here - https://www.home-assistant.io/integrations/workday/
       selector:
         entity:
           filter:
-            - domain: binary_sensor
+            - domain:
+                - binary_sensor
+          multiple: false
+    person_sensor:
+      name: 👤 Person Sensor
+      description: Select the person sensor so that the alarm will only run when you are home.
+      selector:
+        entity:
+          filter:
+            - domain:
+                - person
+          multiple: true
     alarm_script:
-      name: Script to trigger
+      name: 📄 Script to trigger
       description: Light Alarm Script
       selector:
         entity:
           filter:
-            - domain: script
+            - domain:
+                - script
+          multiple: false
     target_light:
-      name: Lights
+      name: 💡 Lights
       description: The light(s) with kelvin
       selector:
         entity:
           filter:
-            - domain: light
+            - domain:
+                - light
+          multiple: false
     light_timeout:
-      name: Timeout
+      name: ⏱️ Timeout
       description: Light will turn off after this time on last run
       default: 10
       selector:
         number:
-          min: 1
-          max: 60
+          min: 1.0
+          max: 60.0
+          step: 1.0
+          mode: slider
     steps_per_minute:
-      name: Steps per minute for all runs
-      description: Used for configuring percentage of each step for brightness and color temperature
+      name: 🏃‍♂️ Steps per minute for all runs
+      description:
+        Used for configuring percentage of each step for brightness and
+        color temperature
       default: 12
       selector:
         number:
-          min: 1
-          max: 60
-
+          min: 1.0
+          max: 60.0
+          step: 1.0
+          mode: slider
     start_kelvin_temp:
       description: Start Kelvin value (warm) for 1st run
       selector:
         color_temp:
           unit: kelvin
       default: 2500
-      name: Starting Kelvin
+      name: ☀️ Starting Kelvin
     target_kelvin_1:
-      description: >-
-        Target Kelvin value (cold) for the end of the first run
+      description: Target Kelvin value (cold) for the end of the first run
       selector:
         color_temp:
           unit: kelvin
       default: 3000
-      name: Target Kelvin 1
+      name: ☀️ Target Kelvin 1
     max_brightness_1:
-      name: Maximum Brightness 1
+      name: ⭐️ Maximum Brightness 1
       description: Finish value for first run
       selector:
         number:
-          min: 1
-          max: 100
+          min: 1.0
+          max: 100.0
+          step: 1.0
+          mode: slider
       default: 10
     alarm_length_1:
-      name: Alarm Length 1
-      description: >-
-        This is the start to finish time for the first run
+      name: ⏰ Alarm Length 1
+      description: This is the start to finish time for the first run
       selector:
         number:
-          min: 1
-          max: 60
+          min: 1.0
+          max: 60.0
+          step: 1.0
+          mode: slider
       default: 10
-
     target_kelvin_2:
-      description: >-
-        Target Kelvin value (cold) for second run
+      description: Target Kelvin value (cold) for second run
       selector:
         color_temp:
           unit: kelvin
       default: 4000
-      name: Target Kelvin 2
+      name: 🌗 Target Kelvin 2
     max_brightness_2:
-      name: Maximum Brightness 2
+      name: ⭐️ Maximum Brightness 2
       description: Finish value for second run
       selector:
         number:
-          min: 1
-          max: 100
+          min: 1.0
+          max: 100.0
+          step: 1.0
+          mode: slider
       default: 50
     alarm_length_2:
-      name: Alarm length 2
-      description: >-
-        This is the start to finish time for the second run
+      name: ⏰ Alarm length 2
+      description: This is the start to finish time for the second run
       selector:
         number:
-          min: 1
-          max: 60
+          min: 1.0
+          max: 60.0
+          step: 1.0
+          mode: slider
       default: 10
-
     target_kelvin_3:
-      description: >-
-        Target Kelvin value (cold) for third run
+      description: Target Kelvin value (cold) for third run
       selector:
         color_temp:
           unit: kelvin
       default: 6500
-      name: Target Kelvin 3
+      name: 🌑 Target Kelvin 3
     max_brightness_3:
-      name: Maximum Brightness 3
+      name: ⭐️ Maximum Brightness 3
       description: Finish value for third and final run
       selector:
         number:
-          min: 1
-          max: 100
+          min: 1.0
+          max: 100.0
+          step: 1.0
+          mode: slider
       default: 100
     alarm_length_3:
-      name: Alarm Length 3
-      description: >-
-        This is the start to finish time for the third run
+      name: ⏰ Alarm Length 3
+      description: This is the start to finish time for the third run
       selector:
         number:
-          min: 1
-          max: 60
+          min: 1.0
+          max: 60.0
+          step: 1.0
+          mode: slider
       default: 5
-
+  source_url: https://github.com/steku/ha_cercadian_alarm/blob/main/parabolic_alarm.yaml
 trigger:
-  - platform: time
+  - trigger: time
     at: !input alarm_start_time
-
 condition:
   - condition: state
     entity_id: !input workday_sensor
     state: "on"
-
+  - condition: state
+    entity_id: !input person_sensor
+    state: "home"
 action:
   - action: light.turn_on
     data:
@@ -159,7 +190,6 @@ action:
       steps_per_minute: !input steps_per_minute
       light_timeout: 0
       target_light: !input target_light
-
   - if:
       - condition: state
         state: "on"
