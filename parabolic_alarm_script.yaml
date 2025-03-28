@@ -117,7 +117,6 @@ sequence:
             - data:
                 brightness: "{{ brightness }}"
                 color_temp_kelvin: "{{ kelvin }}"
-                transition: "{{ individual_step - 1 }}"
               target:
                 entity_id: "{{ target_light }}"
               action: light.turn_on
