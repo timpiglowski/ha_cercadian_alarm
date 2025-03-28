@@ -54,7 +54,7 @@ blueprint:
           multiple: false
     light_timeout:
       name: ⏱️ Timeout
-      description: Light will turn off after this time on last run. Setting this to 0 witl keep the light on.
+      description: Light will turn off after this time on last run. Setting this to 0 will leave the light on.
       default: 10
       selector:
         number:
