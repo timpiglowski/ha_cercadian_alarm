@@ -16,6 +16,12 @@ blueprint:
             - domain: sensor
               device_class: timestamp
           multiple: false
+    complete_at_start_time:
+      name: 🏁 Finish at Start Time
+      description:
+        Complete the transitions by the time given in the Start Time as opposed to starting at the Start Time.
+      selector:
+        boolean:
     workday_sensor:
       name: 📆 Workday Sensor
       description:
@@ -168,6 +174,7 @@ blueprint:
 trigger:
   - trigger: time
     at: !input alarm_start_time
+    offset: "{{ -(alarm_length_1 + alarm_length_2 + alarm_length_3)*60 if complete_at_start_time else 0 }}"
 condition:
   - condition: state
     entity_id: !input workday_sensor
@@ -220,5 +227,4 @@ action:
           steps_per_minute: !input steps_per_minute
           light_timeout: !input light_timeout
           target_light: !input target_light
-mode: parallel
-max: 10
+mode: single
