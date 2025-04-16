@@ -173,8 +173,9 @@ blueprint:
   source_url: https://github.com/steku/ha_cercadian_alarm/blob/main/parabolic_alarm.yaml
 trigger:
   - trigger: time
-    at: !input alarm_start_time
-    offset: "{{ -(alarm_length_1 + alarm_length_2 + alarm_length_3)*60 if complete_at_start_time else 0 }}"
+    at: 
+      entity_id: !input alarm_start_time
+      offset: "{{ -(alarm_length_1 + alarm_length_2 + alarm_length_3)*60 if complete_at_start_time else 0 }}"
 condition:
   - condition: state
     entity_id: !input workday_sensor
