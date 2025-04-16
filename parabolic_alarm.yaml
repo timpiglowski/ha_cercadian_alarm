@@ -6,13 +6,15 @@ blueprint:
     alarm_start_time:
       name: 🕒 Start Time
       description:
-        Datetime helper for the alarm to start. Use time only and Workday sensor
+        Datetime helper or sensor for the alarm to start. Use time only and Workday sensor
         to determine what days to run.
       selector:
         entity:
           filter:
             - domain:
                 - input_datetime
+            - domain: sensor
+              device_class: timestamp
           multiple: false
     workday_sensor:
       name: 📆 Workday Sensor
