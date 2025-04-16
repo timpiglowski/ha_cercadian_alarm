@@ -181,7 +181,8 @@ trigger:
   - trigger: time
     at: 
       entity_id: !input alarm_start_time
-      offset: "{{ calculated_runtime }}"
+      offset: >-
+        "{{ calculated_runtime }}"
 condition:
   - condition: state
     entity_id: !input workday_sensor
