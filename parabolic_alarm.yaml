@@ -16,12 +16,17 @@ blueprint:
             - domain: sensor
               device_class: timestamp
           multiple: false
-    complete_at_start_time:
-      name: 🏁 Finish at Start Time
+    offset_from_start_time:
+      name: 🏁 Offset From Start Time
       description:
-        Complete the transitions by the time given in the Start Time as opposed to starting at the Start Time.
+        Adjust the amount of time before or after the set Start Time value to start the transition. Useful if the start time comes from an alarm entity and you want to adjust where in the brightness cycle you are when the alarm goes off.
+      default: 0
       selector:
-        boolean:
+        number:
+          min: -60.0
+          max: 60.0
+          step: 1.0
+          mode: slider
     workday_sensor:
       name: 📆 Workday Sensor
       description:
@@ -171,17 +176,11 @@ blueprint:
           mode: slider
       default: 5
   source_url: https://github.com/steku/ha_cercadian_alarm/blob/main/parabolic_alarm.yaml
-trigger_variables:
-  input_alarm_entity: !input alarm_start_time
-  input_alarm_length_1: !input alarm_length_1
-  input_alarm_length_2: !input alarm_length_2
-  input_alarm_length_3: !input alarm_length_3
-  input_complete_at_start_time: !input complete_at_start_time
-  calculated_runtime: "{{ -(input_alarm_length_1 + input_alarm_length_2 + input_alarm_length_3)*60 if input_complete_at_start_time else 0 }}"
 trigger:
   - trigger: time
-    at: >-
-      {{ { "entity_id": input_alarm_entity, "offset": calculated_runtime } }}
+    at:
+      entity_id: !input alarm_start_time
+      offset: !input offset_from_start_time
 condition:
   - condition: state
     entity_id: !input workday_sensor
