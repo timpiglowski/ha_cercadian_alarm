@@ -20,7 +20,7 @@ blueprint:
       name: 🏁 Offset From Start Time
       description:
         Adjust the amount of time before or after the set Start Time value to start the transition. Enter seconds or HH:MM:SS format (e.g. "-00:05:00" to start 5 minutes before the Start Time. Useful if the start time comes from an alarm entity and you want to adjust where in the brightness cycle you are when the alarm goes off. See https://www.home-assistant.io/docs/automation/trigger/#sensors-of-datetime-device-class-with-offsets for caution about using positive offsets.
-      default: "-00:05:00"
+      default: "-00:00:00"
       selector:
         text:
     workday_sensor:
