@@ -6,14 +6,23 @@ blueprint:
     alarm_start_time:
       name: 🕒 Start Time
       description:
-        Datetime helper for the alarm to start. Use time only and Workday sensor
+        Datetime helper or sensor for the alarm to start. Use time only and Workday sensor
         to determine what days to run.
       selector:
         entity:
           filter:
             - domain:
                 - input_datetime
+            - domain: sensor
+              device_class: timestamp
           multiple: false
+    offset_from_start_time:
+      name: 🏁 Offset From Start Time
+      description:
+        Adjust the amount of time before or after the set Start Time value to start the transition. Enter seconds or HH:MM:SS format (e.g. "-00:05:00" to start 5 minutes before the Start Time. Useful if the start time comes from an alarm entity and you want to adjust where in the brightness cycle you are when the alarm goes off. See https://www.home-assistant.io/docs/automation/trigger/#sensors-of-datetime-device-class-with-offsets for caution about using positive offsets.
+      default: "-00:05:00"
+      selector:
+        text:
     workday_sensor:
       name: 📆 Workday Sensor
       description:
@@ -58,7 +67,7 @@ blueprint:
       default: 10
       selector:
         number:
-          min: 1.0
+          min: 0.0
           max: 60.0
           step: 1.0
           mode: slider
@@ -165,7 +174,9 @@ blueprint:
   source_url: https://github.com/steku/ha_cercadian_alarm/blob/main/parabolic_alarm.yaml
 trigger:
   - trigger: time
-    at: !input alarm_start_time
+    at:
+      entity_id: !input alarm_start_time
+      offset: !input offset_from_start_time
 condition:
   - condition: state
     entity_id: !input workday_sensor
@@ -218,5 +229,4 @@ action:
           steps_per_minute: !input steps_per_minute
           light_timeout: !input light_timeout
           target_light: !input target_light
-mode: parallel
-max: 10
+mode: single
