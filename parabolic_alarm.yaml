@@ -48,7 +48,7 @@ blueprint:
             - domain:
                 - person
           multiple: false
-    partner_sensor:
+    wife_sensor:
       name: 💍 Wife Sensor
       description: Select the wife person sensor, which will block the automation from running if they are home.
       selector:
