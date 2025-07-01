@@ -48,6 +48,15 @@ blueprint:
             - domain:
                 - person
           multiple: false
+    partner_sensor:
+      name: 💍 Wife Sensor
+      description: Select the wife person sensor, which will block the automation from running if they are home.
+      selector:
+        entity:
+          filter:
+            - domain:
+                - person
+          multiple: false
     alarm_script:
       name: 📄 Script to trigger
       description: Light Alarm Script
@@ -205,6 +214,9 @@ condition:
   - condition: state
     entity_id: !input person_sensor
     state: "home"
+  - condition: state
+    entity_id: !input wife_sensor
+    state: "away"
 action:
   - choose:
       - conditions: []
