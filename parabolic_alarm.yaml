@@ -216,7 +216,7 @@ condition:
     state: "home"
   - condition: state
     entity_id: !input wife_sensor
-    state: "away"
+    state: "not_home"
 action:
   - choose:
       - conditions: []
